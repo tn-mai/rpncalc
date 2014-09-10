@@ -9,7 +9,7 @@ main = do
     Nothing -> putStrLn "PARSE ERROR."
 
 calc :: String -> Maybe (Double)
-calc s = parse [] $ tokenize s
+calc s = parse [] $ words s
 
 parse :: [Double] -> [String] -> Maybe (Double)
 parse [] [] = Nothing
@@ -19,6 +19,3 @@ parse (stack1:stack2:stackTail) ("/":xs) = parse ((stack2 / stack1) : stackTail)
 parse (stack1:stack2:stackTail) ("+":xs) = parse ((stack2 + stack1) : stackTail) xs
 parse (stack1:stack2:stackTail) ("-":xs) = parse ((stack2 - stack1) : stackTail) xs
 parse stack (x:xs) = parse (read x:stack) xs
-
-tokenize :: String -> [String]
-tokenize s = foldr (\e (x:xs) -> if e == ' ' then []:x:xs else (e:x):xs) [[]] s
