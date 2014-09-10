@@ -3,19 +3,15 @@ import System.Environment (getArgs)
 main :: IO ()
 main = do
   s <- getArgs
-  let r = calc $ head s
-  case r of
-    Just value -> putStrLn $ show value
-    Nothing -> putStrLn "PARSE ERROR."
+  putStrLn . show . head . foldl calcurate [] . words $ head s
 
-calc :: String -> Maybe (Double)
-calc s = parse [] $ words s
+calcurate :: [Double] -> String -> [Double]
+calcurate xs "sum" = [sum xs]
+calcurate (x:xs) "ln" = log x:xs
+calcurate (x1:x2:xs) "^" = (x2 ** x1):xs
+calcurate (x1:x2:xs) "*" = (x2 * x1):xs
+calcurate (x1:x2:xs) "/" = (x2 / x1):xs
+calcurate (x1:x2:xs) "+" = (x2 + x1):xs
+calcurate (x1:x2:xs) "-" = (x2 - x1):xs
+calcurate xs e = (read e):xs
 
-parse :: [Double] -> [String] -> Maybe (Double)
-parse [] [] = Nothing
-parse stack [] = Just $ head stack
-parse (stack1:stack2:stackTail) ("*":xs) = parse ((stack2 * stack1) : stackTail) xs
-parse (stack1:stack2:stackTail) ("/":xs) = parse ((stack2 / stack1) : stackTail) xs
-parse (stack1:stack2:stackTail) ("+":xs) = parse ((stack2 + stack1) : stackTail) xs
-parse (stack1:stack2:stackTail) ("-":xs) = parse ((stack2 - stack1) : stackTail) xs
-parse stack (x:xs) = parse (read x:stack) xs
