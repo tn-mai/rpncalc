@@ -21,4 +21,4 @@ parse (stack1:stack2:stackTail) ("-":xs) = parse ((stack1 - stack2) : stackTail)
 parse stack (x:xs) = parse (read x:stack) xs
 
 tokenize :: String -> [String]
-tokenize s = foldr (\e (x:xs) -> if e == ' ' then []:x:xs else (x ++ [e]):xs) [[]] s
+tokenize s = foldr (\e (x:xs) -> if e == ' ' then []:x:xs else (e:x):xs) [[]] s
