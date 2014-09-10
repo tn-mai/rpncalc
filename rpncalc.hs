@@ -4,21 +4,21 @@ import Text.Read (readMaybe)
 main :: IO ()
 main = do
   s <- getArgs
-  let r = foldl calcurate (Just []) . words $ head s
+  let r = foldl calcurate (Right []) . words $ head s
   case r of
-    Nothing -> putStrLn "PARSE ERROR."
-    Just n  -> putStrLn . show $ head n
+    Left e  -> putStrLn $ "Parse error in '" ++ e ++ "'."
+    Right n -> putStrLn . show $ head n
 
-calcurate :: Maybe ([Double]) -> String -> Maybe ([Double])
-calcurate Nothing _ = Nothing
-calcurate (Just xs) "sum" = Just [sum xs]
-calcurate (Just (x:xs)) "ln" = Just $ log x:xs
-calcurate (Just (x1:x2:xs)) "^" = Just $ (x2 ** x1):xs
-calcurate (Just (x1:x2:xs)) "*" = Just $ (x2 * x1):xs
-calcurate (Just (x1:x2:xs)) "/" = Just $ (x2 / x1):xs
-calcurate (Just (x1:x2:xs)) "+" = Just $ (x2 + x1):xs
-calcurate (Just (x1:x2:xs)) "-" = Just $ (x2 - x1):xs
-calcurate (Just xs) e = case readMaybe e of
-  Just n -> Just $ n:xs
-  Nothing -> Nothing
+calcurate :: (Either String [Double]) -> String -> (Either String [Double])
+calcurate (Left e) _ = Left e
+calcurate (Right xs) "sum" = Right [sum xs]
+calcurate (Right (x:xs)) "ln" = Right $ log x:xs
+calcurate (Right (x1:x2:xs)) "^" = Right $ (x2 ** x1):xs
+calcurate (Right (x1:x2:xs)) "*" = Right $ (x2 * x1):xs
+calcurate (Right (x1:x2:xs)) "/" = Right $ (x2 / x1):xs
+calcurate (Right (x1:x2:xs)) "+" = Right $ (x2 + x1):xs
+calcurate (Right (x1:x2:xs)) "-" = Right $ (x2 - x1):xs
+calcurate (Right xs) e = case readMaybe e of
+  Just n -> Right $ n:xs
+  Nothing -> Left e
 
