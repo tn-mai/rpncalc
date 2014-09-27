@@ -1,6 +1,6 @@
 import System.Environment (getArgs)
 import Text.Read (readMaybe)
-import Control.Monad (foldM)
+import Control.Monad (foldM, liftM)
 
 main :: IO ()
 main = do
@@ -18,9 +18,7 @@ calcurate (x1:x2:xs) "*" = Right $ (x2 * x1):xs
 calcurate (x1:x2:xs) "/" = Right $ (x2 / x1):xs
 calcurate (x1:x2:xs) "+" = Right $ (x2 + x1):xs
 calcurate (x1:x2:xs) "-" = Right $ (x2 - x1):xs
-calcurate xs e = case readMaybe e of
-  Just n -> Right $ n:xs
-  Nothing -> Left e
+calcurate xs e = liftM (:xs) $ read e
   where
     read :: (Read a) => String -> Either String a
     read e = case reads e of
