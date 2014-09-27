@@ -21,4 +21,8 @@ calcurate (x1:x2:xs) "-" = Right $ (x2 - x1):xs
 calcurate xs e = case readMaybe e of
   Just n -> Right $ n:xs
   Nothing -> Left e
-
+  where
+    read :: (Read a) => String -> Either String a
+    read e = case reads e of
+      [(x, "")] -> Right x
+      _ -> Left $ "Parse error in '" ++ e ++ "'"
