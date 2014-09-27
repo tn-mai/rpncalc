@@ -7,7 +7,7 @@ main = do
   s <- getArgs
   let r = foldM calcurate [] . words $ head s
   case r of
-    Left e  -> putStrLn $ "Parse error in '" ++ e ++ "'."
+    Left e  -> putStrLn e
     Right n -> putStrLn . show $ head n
 
 calcurate :: [Double] -> String -> (Either String [Double])
